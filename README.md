@@ -91,7 +91,7 @@ to authenticate - using `foo` / `foo` will work.
 $ curl -u foo:foo http://localhost:8080/mywar-skinny-1.0-SNAPSHOT/MyServlet
 Overlay servlet
 ```
-# Using an EAR file (TL;DR: doesn't work!)
+# Using an EAR file
 
 ```shell
 $ mvn clean install && \
@@ -111,8 +111,9 @@ Add the overlay with the servlet:
 ```shell
 $ ~/wildfly-28.0.1.Final/bin/jboss-cli.sh --connect
 [standalone@localhost:9990 /] deployment-overlay add --name=web-fragment-jar \
-  --content=WEB-INF/lib/myjar-1.0-SNAPSHOT.jar=~/projects/web-fragments-overlays/myjar/target/myjar-1.0-SNAPSHOT.jar \
-  --deployments=myear-1.0-SNAPSHOT.ear/mywar-skinny-1.0-SNAPSHOT.war --redeploy-affected
+  --content=/org.example-mywar-skinny-1.0-SNAPSHOT.war/WEB-INF/lib/myjar-1.0-SNAPSHOT.jar=~/projects/web-fragments-overlays/myjar/target/myjar-1.0-SNAPSHOT.jar \
+  --deployments=myear-1.0-SNAPSHOT.ear \
+  --redeploy-affected
 ```
 
 Check:
@@ -120,15 +121,6 @@ Check:
 ```shell
 curl http://localhost:8080/mywar/MyServlet
 Overlay servlet
-```
-
-Add the overlay with the security constraint:
-
-```shell
-$ ~/wildfly-28.0.1.Final/bin/jboss-cli.sh --connect
-[standalone@localhost:9990 /] deployment-overlay add --name=my-security-jar \
-  --content=WEB-INF/lib/mysecurity-1.0-SNAPSHOT.jar=~/projects/web-fragments-overlays/mysecurity/target/mysecurity-1.0-SNAPSHOT.jar \
-  --deployments=myear-1.0-SNAPSHOT.ear/*.war --redeploy-affected
 ```
 
 # References
@@ -140,3 +132,4 @@ $ ~/wildfly-28.0.1.Final/bin/jboss-cli.sh --connect
 * <https://jakarta.ee/xml/ns/jakartaee/#10>
 * <https://www.amitph.com/servlet-3-0-web-fragments-and-other-features/>
 * <https://www.mastertheboss.com/web/jboss-web-server/how-to-add-a-web-fragment-to-all-applications-deployed-on-wildfly/>
+* <https://access.redhat.com/solutions/383393>
