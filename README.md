@@ -1,17 +1,41 @@
 Overlaying a web-fragment
 ===
 
-Example on how to add web fragments to a JEE application on WildFly 28.
+Example on how to add web fragments to a JEE application on WildFly.
 
-WildFly must be up and running:
+We will also use Apache Tomcat to check the web fragments-related
+aspects on this project, without relying on the WildFly-specific
+feature of overlays.
+
+This example contains the following modules:
+* `mywar-skinny` - webapp that does not contain anything; we'll use it
+to add two overlays to it, one for a servlet and one for security
+constraints on the server
+* `myear` - this is just an EAR wrappe for `mywar-skinny`
+* `myjar` - this is the JAR that contains the web fragment that defines
+the servlet
+* `mysecurity` - this is the JAR that contains the web fragment that defines
+the security constraints for the servlet
+* `mywar` - this is a regular WAR that contains the two JARs above
+
+The plan is to
+* Use WildFly to
+  * deploy `mywar-skinny` and add `myjar` and  `mysecurity` as overlays to it
+  * deploy `myear` to do the same
+* Use Tomcat to deploy `mywar` and verify that the web fragments defined by
+`myjar` and  `mysecurity` work there, too
+
+# Install WildFly
+
+Install [WildFly](https://www.wildfly.org) and start it up:
 
 ```shell
 $ ~/wildfly-28.0.1.Final/bin/standalone.sh
 ```
 
-# Adding a servlet
+# Adding a servlet to a WAR
 
-Deploy the "empty" WAR:
+Deploy the WAR:
 
 ```shell
 $ mvn clean install && \
@@ -42,7 +66,7 @@ curl http://localhost:8080/mywar-skinny-1.0-SNAPSHOT/MyServlet
 Overlay servlet
 ```
 
-# Adding security constraints
+# Adding security constraints to a WAR
 
 Deploy the fragment adding security constraint:
 
@@ -101,6 +125,8 @@ Overlay servlet
 
 # Using an EAR file
 
+Now we'll do the same, but using the EAR:
+
 ```shell
 $ mvn clean install && \
   cp myear/target/myear-1.0-SNAPSHOT.ear \
@@ -156,9 +182,8 @@ Overlay servlet
 
 # Checking no roles
 
-In fact, also no roles at all will do
-To check that at least a role is necessary, create a user with credentials `baz` / `baz`
-belonging to no groups:
+In fact, also users with no roles will satisfy the `*` constraint. To check, create a
+user with credentials `baz` / `baz` belonging to no groups:
 
 ```shell
 $ ~/wildfly-28.0.1.Final/bin/add-user.sh 
@@ -188,7 +213,7 @@ Added user 'baz' with groups  to file '/Users/milad/wildfly-28.0.1.Final/standal
 Added user 'baz' with groups  to file '/Users/milad/wildfly-28.0.1.Final/domain/configuration/application-roles.properties'
 ```
 
-To confirm:
+To confirm that the new user has no group, compare it with the other one, `foo`:
 
 ```shell
 $ tail -n 2 ~/wildfly-28.0.1.Final/standalone/configuration/application-roles.properties
@@ -196,7 +221,7 @@ foo=bar
 baz=
 ```
 
-Check that access is not granted with these credentials:
+Check that access is granted with the new credentials:
 
 ```shell
 $ curl -u baz:baz http://localhost:8080/mywar/MyServlet
@@ -205,7 +230,17 @@ Overlay servlet
 
 # Using Tomcat (10.1.9)
 
-Start the server:
+So far, we've been verifying the overlays functionality on WildFly, together
+with the web fragment feature of JEE. Now we'll remove overlays from the picture,
+and test the web fragments on Tomcat, just to check that this feature doesn't just
+work WildFly, but on any servlet container.
+
+To do that, we will use `mywar`, which includes the two web fragments deployed as JARs
+in its `WEB-INF/lib` folder to define a servlet and security constraints
+to the servlet.
+
+To do this check, download [Tomcat 10](https://tomcat.apache.org/download-10.cgi),
+and start the server:
 
 ```shell
 $ export JAVA_HOME=`asdf where java`
