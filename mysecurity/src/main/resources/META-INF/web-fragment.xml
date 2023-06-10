@@ -3,7 +3,6 @@
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-fragment_6_0.xsd"
               version="6.0">
-    <name>my_security</name>
     <security-constraint>
         <web-resource-collection>
             <web-resource-name>HtmlAuth</web-resource-name>
@@ -13,7 +12,7 @@
             <http-method>POST</http-method>
         </web-resource-collection>
         <auth-constraint>
-            <role-name>bar</role-name>
+            <role-name>*</role-name>
         </auth-constraint>
     </security-constraint>
     <login-config>
@@ -21,6 +20,6 @@
         <realm-name>UserRoles simple realm</realm-name>
     </login-config>
     <security-role>
-        <role-name>bar</role-name>
+        <role-name>*</role-name>
     </security-role>
 </web-fragment>
