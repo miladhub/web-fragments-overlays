@@ -12,7 +12,7 @@ This example contains the following modules:
 to add two overlays to it, one for a servlet and one for security
 constraints on the server
 * `myear` - this is just an EAR wrappe for `mywar-skinny`
-* `myjar` - this is the JAR that contains the web fragment that defines
+* `myservlet` - this is the JAR that contains the web fragment that defines
 the servlet
 * `mysecurity` - this is the JAR that contains the web fragment that defines
 the security constraints for the servlet
@@ -20,10 +20,10 @@ the security constraints for the servlet
 
 The plan is to
 * Use WildFly to
-  * deploy `mywar-skinny` and add `myjar` and  `mysecurity` as overlays to it
+  * deploy `mywar-skinny` and add `myservlet` and  `mysecurity` as overlays to it
   * deploy `myear` to do the same
 * Use Tomcat to deploy `mywar` and verify that the web fragments defined by
-`myjar` and  `mysecurity` work there, too
+`myservlet` and  `mysecurity` work there, too
 
 # Install WildFly
 
@@ -55,7 +55,7 @@ Add the overlay with the servlet:
 ```shell
 $ ~/wildfly-28.0.1.Final/bin/jboss-cli.sh --connect
 [standalone@localhost:9990 /] deployment-overlay add --name=web-fragment-jar \
-  --content=WEB-INF/lib/myjar-1.0-SNAPSHOT.jar=~/projects/web-fragments-overlays/myjar/target/myjar-1.0-SNAPSHOT.jar \
+  --content=WEB-INF/lib/myservlet-1.0-SNAPSHOT.jar=~/projects/web-fragments-overlays/myservlet/target/myservlet-1.0-SNAPSHOT.jar \
   --deployments=*.war --redeploy-affected
 ```
 
@@ -157,7 +157,7 @@ Add the overlay with the servlet:
 ```shell
 $ ~/wildfly-28.0.1.Final/bin/jboss-cli.sh --connect
 [standalone@localhost:9990 /] deployment-overlay add --name=web-fragment-jar \
-  --content=/org.example-mywar-skinny-1.0-SNAPSHOT.war/WEB-INF/lib/myjar-1.0-SNAPSHOT.jar=~/projects/web-fragments-overlays/myjar/target/myjar-1.0-SNAPSHOT.jar \
+  --content=/org.example-mywar-skinny-1.0-SNAPSHOT.war/WEB-INF/lib/myservlet-1.0-SNAPSHOT.jar=~/projects/web-fragments-overlays/myservlet/target/myservlet-1.0-SNAPSHOT.jar \
   --deployments=*.ear \
   --redeploy-affected
 ```
@@ -269,8 +269,8 @@ To do this check, download [Tomcat 10](https://tomcat.apache.org/download-10.cgi
 and start the server:
 
 ```shell
-$ export JAVA_HOME=`asdf where java`
-$ ~/apache-tomcat-10.1.9/bin/catalina.sh start
+$ export JAVA_HOME=`asdf where java` && \
+  ~/apache-tomcat-10.1.9/bin/catalina.sh start
 ```
 
 Deploy the webapp with the servlet and security constraints web fragments,
