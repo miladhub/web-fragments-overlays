@@ -63,7 +63,7 @@ Check:
 
 ```shell
 curl http://localhost:8080/mywar-skinny-1.0-SNAPSHOT/MyServlet
-Overlay servlet
+My servlet - unauthenticated
 ```
 
 # Adding security constraints to a WAR
@@ -120,12 +120,24 @@ to authenticate - using `foo` / `foo` will work.
 
 ```shell
 $ curl -u foo:foo http://localhost:8080/mywar-skinny-1.0-SNAPSHOT/MyServlet
-Overlay servlet
+My servlet - logged in as foo
 ```
 
 # Using an EAR file
 
-Now we'll do the same, but using the EAR:
+First, undeploy everything:
+
+```shell
+$ ~/wildfly-28.0.1.Final/bin/jboss-cli.sh --connect
+[standalone@localhost:9990 /] deployment-overlay remove --name=my-security-jar --redeploy-affected
+[standalone@localhost:9990 /] deployment-overlay remove --name=web-fragment-jar --redeploy-affected
+```
+
+```shell
+$ rm ~/wildfly-28.0.1.Final/standalone/deployments/mywar-skinny-1.0-SNAPSHOT.war
+```
+
+Now we'll do the same as before, but using the EAR:
 
 ```shell
 $ mvn clean install && \
@@ -154,7 +166,7 @@ Check that the servlet responds correctly:
 
 ```shell
 curl http://localhost:8080/mywar/MyServlet
-Overlay servlet
+My servlet - unauthenticated
 ```
 
 Deploy the fragment adding security constraint:
@@ -177,7 +189,7 @@ Check that access is now granted with credentials:
 
 ```shell
 $ curl -u foo:foo http://localhost:8080/mywar/MyServlet
-Overlay servlet
+My servlet - logged in as foo
 ```
 
 # Checking no roles
@@ -225,8 +237,22 @@ Check that access is granted with the new credentials:
 
 ```shell
 $ curl -u baz:baz http://localhost:8080/mywar/MyServlet
-Overlay servlet
+My servlet - logged in as baz
 ```
+
+For completeness, this is how to undeploy everything again:
+
+```shell
+$ ~/wildfly-28.0.1.Final/bin/jboss-cli.sh --connect
+[standalone@localhost:9990 /] deployment-overlay remove --name=my-security-jar --redeploy-affected
+[standalone@localhost:9990 /] deployment-overlay remove --name=web-fragment-jar --redeploy-affected
+```
+
+```shell
+$ rm ~/wildfly-28.0.1.Final/standalone/deployments/myear-1.0-SNAPSHOT.ear
+```
+
+Finally, you can stop WildFly by hitting Ctrl-C on its terminal window.
 
 # Using Tomcat (10.1.9)
 
@@ -262,7 +288,7 @@ $ curl http://localhost:8080/mywar-1.0-SNAPSHOT/MyServlet
 <!doctype html><html lang="en"><head><title>HTTP Status 401 – Unauthorized</title><style type="text/css">body {font-family:Tahoma,Arial,sans-serif;} h1, h2, h3, b {color:white;background-color:#525D76;} h1 {font-size:22px;} h2 {font-size:16px;} h3 {font-size:14px;} p {font-size:12px;} a {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 401 – Unauthorized</h1><hr class="line" /><p><b>Type</b> Status Report</p><p><b>Description</b> The request has not been applied because it lacks valid authentication credentials for the target resource.</p><hr class="line" /><h3>Apache Tomcat/10.1.9</h3></body></html>
 ```
 
-Add a user to `~/apache-tomcat-10.1.9//conf/tomcat-users.xml`:
+Add a user to `~/apache-tomcat-10.1.9/conf/tomcat-users.xml`:
 
 ```xml
 <tomcat-users>
@@ -275,7 +301,7 @@ Verify that access is granted with authentication:
 
 ```shell
 $ curl -u foo:foo http://localhost:8080/mywar-1.0-SNAPSHOT/MyServlet
-Overlay servlet
+My servlet - logged in as foo
 ```
 
 # References

@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.Principal;
 
 public class MyServlet extends HttpServlet
 {
@@ -15,7 +16,11 @@ public class MyServlet extends HttpServlet
     )
     throws IOException {
         try (PrintWriter writer = response.getWriter()){
-            writer.print("Overlay servlet");
+            Principal principal = request.getUserPrincipal();
+            String auth = (principal != null)
+                    ? "logged in as " + principal.getName()
+                    : "unauthenticated";
+            writer.print("My servlet - " + auth);
             writer.flush();
         }
     } 
