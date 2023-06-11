@@ -11,7 +11,7 @@ This example contains the following modules:
 * `mywar-skinny` - webapp that does not contain anything; we'll use it
 to add two overlays to it, one for a servlet and one for security
 constraints on the server
-* `myear` - this is just an EAR wrappe for `mywar-skinny`
+* `myear` - this is just an EAR wrapper for `mywar-skinny`
 * `myservlet` - this is the JAR that contains the web fragment that defines
 the servlet
 * `mysecurity` - this is the JAR that contains the web fragment that defines
@@ -19,9 +19,9 @@ the security constraints for the servlet
 * `mywar` - this is a regular WAR that contains the two JARs above
 
 The plan is to
-* Use WildFly to
-  * deploy `mywar-skinny` and add `myservlet` and  `mysecurity` as overlays to it
-  * deploy `myear` to do the same
+* Use WildFly to deploy
+  * `mywar-skinny` and add `myservlet` and  `mysecurity` as overlays to it
+  * `myear` to do the same
 * Use Tomcat to deploy `mywar` and verify that the web fragments defined by
 `myservlet` and  `mysecurity` work there, too
 
@@ -129,8 +129,10 @@ First, undeploy everything:
 
 ```shell
 $ ~/wildfly-28.0.1.Final/bin/jboss-cli.sh --connect
-[standalone@localhost:9990 /] deployment-overlay remove --name=my-security-jar --redeploy-affected
-[standalone@localhost:9990 /] deployment-overlay remove --name=web-fragment-jar --redeploy-affected
+[standalone@localhost:9990 /] deployment-overlay remove \
+  --name=my-security-jar --redeploy-affected
+[standalone@localhost:9990 /] deployment-overlay remove \
+  --name=web-fragment-jar --redeploy-affected
 ```
 
 ```shell
@@ -244,8 +246,10 @@ For completeness, this is how to undeploy everything again:
 
 ```shell
 $ ~/wildfly-28.0.1.Final/bin/jboss-cli.sh --connect
-[standalone@localhost:9990 /] deployment-overlay remove --name=my-security-jar --redeploy-affected
-[standalone@localhost:9990 /] deployment-overlay remove --name=web-fragment-jar --redeploy-affected
+[standalone@localhost:9990 /] deployment-overlay remove \
+  --name=my-security-jar --redeploy-affected
+[standalone@localhost:9990 /] deployment-overlay remove \
+  --name=web-fragment-jar --redeploy-affected
 ```
 
 ```shell
