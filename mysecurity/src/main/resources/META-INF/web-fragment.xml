@@ -8,8 +8,6 @@
             <web-resource-name>HtmlAuth</web-resource-name>
             <description>application security constraints</description>
             <url-pattern>/*</url-pattern>
-            <http-method>GET</http-method>
-            <http-method>POST</http-method>
         </web-resource-collection>
         <auth-constraint>
             <role-name>*</role-name>
@@ -17,7 +15,6 @@
     </security-constraint>
     <login-config>
         <auth-method>BASIC</auth-method>
-        <realm-name>UserRoles simple realm</realm-name>
     </login-config>
     <security-role>
         <role-name>*</role-name>

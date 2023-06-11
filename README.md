@@ -25,6 +25,23 @@ The plan is to
 * Use Tomcat to deploy `mywar` and verify that the web fragments defined by
 `myservlet` and  `mysecurity` work there, too
 
+Note that we have defined a constraint with a `*` role name to indicate
+"any" role name, so that we're not constrained to any particular role:
+
+```xml
+<auth-constraint>
+    <role-name>*</role-name>
+</auth-constraint>
+```
+
+This is allowed by the [Servlet 3.1 specifications](https://download.oracle.com/otn-pub/jcp/servlet-3_1-fr-eval-spec/servlet-3_1-final.pdf),
+§14.4, point 17, "security-constraint Element":
+
+> The role-name used here must either correspond to the role-name of one of
+> the security-role elements defined for this Web application, or be the specially
+> reserved role-name "*" that is a compact syntax for indicating all roles in the
+> web application.
+
 # Install WildFly
 
 Install [WildFly](https://www.wildfly.org) and start it up:
@@ -297,7 +314,8 @@ Add a user to `~/apache-tomcat-10.1.9/conf/tomcat-users.xml`:
 ```xml
 <tomcat-users>
     ...
-    <user username="foo" password="foo" />
+    <user username="foo" password="foo" roles="bar" />
+    <user username="baz" password="baz" />
 </tomcat-users>
 ```
 
@@ -306,6 +324,8 @@ Verify that access is granted with authentication:
 ```shell
 $ curl -u foo:foo http://localhost:8080/mywar-1.0-SNAPSHOT/MyServlet
 My servlet - logged in as foo
+$ curl -u baz:baz http://localhost:8080/mywar-1.0-SNAPSHOT/MyServlet
+My servlet - logged in as baz
 ```
 
 # References
