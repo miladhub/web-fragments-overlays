@@ -314,3 +314,5 @@ My servlet - logged in as foo
 * <https://www.amitph.com/servlet-3-0-web-fragments-and-other-features/>
 * <https://www.mastertheboss.com/web/jboss-web-server/how-to-add-a-web-fragment-to-all-applications-deployed-on-wildfly/>
 * <https://access.redhat.com/solutions/383393>
+* <https://download.oracle.com/otn-pub/jcp/servlet-3_1-fr-eval-spec/servlet-3_1-final.pdf>
+* <https://developer.jboss.org/thread/266201>
